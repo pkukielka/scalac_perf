@@ -66,8 +66,9 @@ self =>
   /** Return the current string concatenated `n` times.
    */
   def * (n: Int): String = {
+    val str = toString
     val buf = new StringBuilder
-    for (i <- 0 until n) buf append toString
+    for (i <- 0 until n) buf append str
     buf.toString
   }
 
@@ -86,14 +87,15 @@ self =>
    *  (`0x0D` hex), the `CR` character is also stripped (Windows convention).
    */
   def stripLineEnd: String = {
-    val len = toString.length
-    if (len == 0) toString
+    val str = toString
+    val len = str.length
+    if (len == 0) str
     else {
       val last = apply(len - 1)
       if (isLineBreak(last))
-        toString.substring(0, if (last == LF && len >= 2 && apply(len - 2) == CR) len - 2 else len - 1)
+        str.substring(0, if (last == LF && len >= 2 && apply(len - 2) == CR) len - 2 else len - 1)
       else
-        toString
+        str
     }
   }
 
@@ -141,29 +143,38 @@ self =>
    * If the first character of the string is capitalized, it is returned unchanged.
    * This method does not convert characters outside the Basic Multilingual Plane (BMP).
    */
-  def capitalize: String =
-    if (toString == null) null
-    else if (toString.length == 0) ""
-    else if (toString.charAt(0).isUpper) toString
+  def capitalize: String = {
+    val str = toString
+    if (str == null) null
+    else if (str.isEmpty) ""
+    else if (str.charAt(0).isUpper) str
     else {
-      val chars = toString.toCharArray
+      val chars = str.toCharArray
       chars(0) = chars(0).toUpper
       new String(chars)
     }
+  }
+
 
   /** Returns this string with the given `prefix` stripped. If this string does not
    *  start with `prefix`, it is returned unchanged.
    */
-  def stripPrefix(prefix: String) =
-    if (toString.startsWith(prefix)) toString.substring(prefix.length)
-    else toString
+  def stripPrefix(prefix: String) = {
+    val str = toString
+    if (str.startsWith(prefix)) str.substring(prefix.length)
+    else str
+  }
+
 
   /** Returns this string with the given `suffix` stripped. If this string does not
    *  end with `suffix`, it is returned unchanged.
    */
-  def stripSuffix(suffix: String) =
-    if (toString.endsWith(suffix)) toString.substring(0, toString.length() - suffix.length)
-    else toString
+  def stripSuffix(suffix: String) = {
+    val str = toString
+    if (str.endsWith(suffix)) str.substring(0, str.length() - suffix.length)
+    else str
+  }
+
 
   /** Replace all literal occurrences of `literal` with the literal string `replacement`.
    *  This method is equivalent to [[java.lang.String#replace]].
