@@ -153,6 +153,13 @@ object ManifestFactory {
     override def newArray(len: Int): Array[Double] = new Array[Double](len)
     override def newWrappedArray(len: Int): WrappedArray[Double] = new WrappedArray.ofDouble(new Array[Double](len))
     override def newArrayBuilder(): ArrayBuilder[Double] = new ArrayBuilder.ofDouble()
+
+    override def unapply(x: Any): Option[Double] = {
+      x match {
+        case d: Double => Some(d)
+        case _ => None
+      }
+    }
     private def readResolve(): Any = Manifest.Double
   }
   val Double: AnyValManifest[Double] = new DoubleManifest
