@@ -467,18 +467,12 @@ trait Iterator[+A] extends IterableOnce[A] with IterableOnceOps[A, Iterator, Ite
         if (!self.hasNext) false
         else {
           nextElement = self.next()
-          val y = f(nextElement)
-          if (traversedValues.contains(y)) {
-            loop()
-          } else {
-            traversedValues += y
-            nextElementDefined = true
-            true
-          }
+          traversedValues.add(f(nextElement)) || loop()
         }
       }
 
-      nextElementDefined || loop()
+      nextElementDefined = nextElementDefined || loop()
+      nextElementDefined
     }
 
     def next(): A =

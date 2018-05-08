@@ -11,6 +11,11 @@ trait StrictOptimizedSeqOps[+A, +CC[_], +C]
   extends SeqOps[A, CC, C]
     with collection.StrictOptimizedSeqOps[A, CC, C] {
 
+  override def distinctBy[B](f: A => B): C = {
+    if (lengthCompare(1) <= 0) coll
+    else super.distinctBy(f)
+  }
+
   override def updated[B >: A](index: Int, elem: B): CC[B] = {
     if (index < 0) throw new IndexOutOfBoundsException(index.toString)
     val b = iterableFactory.newBuilder[B]()

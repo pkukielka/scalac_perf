@@ -14,15 +14,13 @@ trait StrictOptimizedSeqOps [+A, +CC[_], +C]
   override def distinctBy[B](f: A => B): C = {
     val builder = newSpecificBuilder()
     val seen = mutable.HashSet.empty[B]
-
-    for (x <- this) {
-      val y = f(x)
-      if (!seen.contains(y)) {
-        seen += y
-        builder += x
-      }
+    val it = this.iterator()
+    var different = false
+    while (it.hasNext) {
+      val next = it.next()
+      if (seen.add(f(next))) builder += next else different = true
     }
-    builder.result()
+    if (different) builder.result() else coll
   }
 
   override def prepended[B >: A](elem: B): CC[B] = {
