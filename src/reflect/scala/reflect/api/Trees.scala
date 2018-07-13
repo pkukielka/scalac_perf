@@ -2552,7 +2552,6 @@ trait Trees { self: Universe =>
     @inline protected[scala] def currentOwner_=(sym: Symbol): Unit = _currentOwner = sym
     private[this] var _currentOwner: Symbol = rootMirror.RootClass
 
-
     /** The enclosing method of the currently transformed tree. */
     protected def currentMethod = {
       def enclosingMethod(sym: Symbol): Symbol =

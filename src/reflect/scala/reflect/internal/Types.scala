@@ -103,7 +103,7 @@ trait Types
 
     def apply(from: List[Symbol], to: List[Type]): SubstTypeMap = {
       val cachedValue = cached.get
-      if ((cachedValue.from ne from) || (cachedValue.to ne to)){
+      if ((cachedValue.from ne from) || (cachedValue.to ne to)) {
         val newValue = new SubstTypeMap(from, to)
         cached.set(newValue)
         newValue

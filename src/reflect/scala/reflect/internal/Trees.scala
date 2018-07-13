@@ -1785,8 +1785,6 @@ trait Trees extends api.Trees {
       if ((t1 ne t) && t1.pos.isRange && focusPositions) t1 setPos t.pos.focus
       t1
     }
-
-    //def safeTransform(tree: Tree) = Parallel.synchronizeAccess(this)(transform(tree))
   }
 
   final def focusInPlace(t: Tree): t.type =

@@ -39,7 +39,6 @@ object Parallel {
     @inline final def apply[T](op: => T) = synchronizeAccess(this)(op)
   }
 
-
   def IntWorkerThreadLocal(initial: Int = 0, shouldFailOnMain: Boolean = true) =
     new AbstractIntThreadLocal(initial, shouldFailOnMain)
 
