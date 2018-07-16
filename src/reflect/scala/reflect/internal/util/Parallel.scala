@@ -92,38 +92,13 @@ object Parallel {
     }
   }
 
-  class LazyThreadLocal[T](initial: => T, shouldFailOnMain: Boolean = false) {
-    private var main: T = null.asInstanceOf[T]
-
-    private[this] lazy val worker: ThreadLocal[T] = new ThreadLocal[T] {
-      override def initialValue(): T = initial
-    }
-
-    @inline final def get: T = {
-      if (isParallel && isWorker.get()) worker.get()
-      else {
-        if (isParallel && shouldFailOnMain) throw new IllegalStateException("not allowed on main thread")
-        if (main == null) main = initial
-        main
-      }
-    }
-
-    @inline final def set(value: T): Unit =
-      if (isParallel && isWorker.get()) worker.set(value) else main = value
-
-    @inline final def reset(): Unit = {
-      worker.remove()
-      main = initial
-    }
-  }
-
   type WorkerThreadLocal[T] = AbstractThreadLocal[T]
   // `WorkerThreadLocal` detects reads/writes of given value on the main thread and
   // and report such violations by throwing exception.
   def WorkerThreadLocal[T](valueOnWorker: T) = new AbstractThreadLocal(valueOnWorker, true)
+
   // `WorkerOrMainThreadLocal` allows us to have different type of values on main and worker threads.
   // It's useful in cases like reporter, when on workers we want to just store messages and on main we want to print them,
-
   type WorkerOrMainThreadLocal[T] = AbstractThreadLocal[T]
   def WorkerOrMainThreadLocal[T](valueOnWorker: T) = new AbstractThreadLocal(valueOnWorker, false)
 

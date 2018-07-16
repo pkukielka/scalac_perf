@@ -5,6 +5,7 @@ package internal
 import scala.collection.mutable
 import util._
 import scala.collection.mutable.ListBuffer
+import scala.reflect.internal
 import scala.reflect.internal.util.Parallel.WorkerThreadLocal
 
 /** Handling range positions
@@ -283,7 +284,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
   }
 
   // Reported by umad
-  protected[this] val _posAssigner = new Parallel.LazyThreadLocal[PosAssigner](new DefaultPosAssigner)
+  protected[this] lazy val _posAssigner: Parallel.WorkerThreadLocal[PosAssigner] = Parallel.WorkerThreadLocal(new DefaultPosAssigner)
   @inline protected[this] final def posAssigner: PosAssigner = _posAssigner.get
 
   protected class DefaultPosAssigner extends PosAssigner {
