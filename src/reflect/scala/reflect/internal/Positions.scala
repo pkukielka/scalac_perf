@@ -284,7 +284,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
   }
 
   // Reported by umad
-  protected[this] lazy val _posAssigner: Parallel.WorkerThreadLocal[PosAssigner] = Parallel.WorkerThreadLocal(new DefaultPosAssigner)
+  protected[this] val _posAssigner: Parallel.WorkerThreadLocal[PosAssigner] = Parallel.WorkerThreadLocal(new DefaultPosAssigner)
   @inline protected[this] final def posAssigner: PosAssigner = _posAssigner.get
 
   protected class DefaultPosAssigner extends PosAssigner {

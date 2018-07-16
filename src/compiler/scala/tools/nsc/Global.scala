@@ -1224,7 +1224,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
     val symData = new mutable.AnyRefMap[Symbol, PickleBuffer]
 
     private var phasec: Int = 0                     // phases completed
-    private final val unitc: Counter = new Counter  // units completed this phase
+    private final val unitc: AtomicCounter = new AtomicCounter  // units completed this phase
 
     def size = unitbuf.size
     override def toString = "scalac Run for:\n  " + compiledFiles.toList.sorted.mkString("\n  ")

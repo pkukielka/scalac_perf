@@ -9,14 +9,14 @@ package internal
 
 import Flags._
 import scala.collection.mutable
-import scala.reflect.internal.util.Parallel.{Counter, WorkerThreadLocal}
+import scala.reflect.internal.util.Parallel.{AtomicCounter, WorkerThreadLocal}
 import scala.reflect.macros.Attachments
 import util.{Parallel, Statistics, StatisticsStatics}
 
 trait Trees extends api.Trees {
   self: SymbolTable =>
 
-  private[scala] final val nodeCount: Counter = new Counter
+  private[scala] final val nodeCount: AtomicCounter = new AtomicCounter
 
   protected def treeLine(t: Tree): String =
     if (t.pos.isDefined && t.pos.isRange) t.pos.lineContent.drop(t.pos.column - 1).take(t.pos.end - t.pos.start + 1)

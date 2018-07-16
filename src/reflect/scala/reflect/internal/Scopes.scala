@@ -15,7 +15,7 @@ import scala.reflect.internal.util.{Parallel, Statistics, StatisticsStatics}
 trait Scopes extends api.Scopes { self: SymbolTable =>
 
   // Reset `scopeCount` per every run
-  private val _scopeCount = new Parallel.Counter
+  private val _scopeCount = new Parallel.AtomicCounter
   private[scala] def scopeCount: Int = _scopeCount.get
   private[scala] def scopeCount_=(v: Int) = _scopeCount.set(v)
 

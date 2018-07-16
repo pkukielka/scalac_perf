@@ -21,7 +21,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
   // `ids` is used to generate unique ids so we don't need lock anything else
   // The only problem is that with this we may break RT of scala compiler
-  private[this] var ids = Parallel.Counter()
+  private[this] var ids = Parallel.AtomicCounter()
   def getCurrentSymbolIdCount: Int = ids.get
   private[this] object IdsLock
 

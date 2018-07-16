@@ -31,7 +31,7 @@ trait TypeComparers {
   }
 
   // With Threadlocal it fails with NPE in GenBCode.scala:94
-  private var _subsametypeRecursions = Parallel.Counter()
+  private var _subsametypeRecursions = Parallel.AtomicCounter()
   def subsametypeRecursions = _subsametypeRecursions.get
   def subsametypeRecursions_=(value: Int): Unit = _subsametypeRecursions.set(value)
 
