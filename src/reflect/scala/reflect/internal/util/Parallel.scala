@@ -4,6 +4,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 object Parallel {
 
+  class IndexedThread(val index: Int, group: ThreadGroup, target: Runnable, namePrefix: String)
+    extends Thread(group, target, namePrefix + index, 0)
+
   var isParallel = false
 
   class AtomicCounter(initial: Int = 0) {
@@ -27,7 +30,40 @@ object Parallel {
   }
 
   object AtomicCounter {
-    def apply(initial: Int = 0): AtomicCounter = new AtomicCounter(initial)
+    @inline final def apply(initial: Int = 0): AtomicCounter = new AtomicCounter(initial)
+  }
+
+  class ThreadLocalCounter(initial: Int = 0) {
+    final val arr: Array[Int] = Array.fill[Int](1000)(initial)
+
+    @inline def index = Thread.currentThread() match {
+      case thread: IndexedThread => thread.index
+      case _ => 0
+    }
+
+    @inline final def get: Int = arr(index)
+
+    @inline final def reset(): Unit = arr(index) = 0
+
+    @inline final def incrementAndGet(): Int = {
+      val newValue = arr(index) + 1
+      arr(index) = newValue
+      newValue
+    }
+
+    @inline final def getAndIncrement(): Int = {
+      val oldValue = arr(index)
+      arr(index) = oldValue + 1
+      oldValue
+    }
+
+    @inline final def set(v: Int): Unit = arr(index) = v
+
+    @inline final override def toString: String = s"Counter[${arr(index)}]"
+  }
+
+  object ThreadLocalCounter {
+    def apply(initial: Int = 0): ThreadLocalCounter = new ThreadLocalCounter(initial)
   }
 
   // Wrapper for `synchronized` method. In future could provide additional logging, safety checks, etc.
@@ -61,7 +97,6 @@ object Parallel {
     }
   }
 
-  @inline final def IntWorkerThreadLocal(i: => Int) = new AbstractThreadLocal(i, false)
 
   type WorkerThreadLocal[T] = AbstractThreadLocal[T]
   // `WorkerThreadLocal` detects reads/writes of given value on the main thread and

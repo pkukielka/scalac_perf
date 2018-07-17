@@ -495,11 +495,10 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
       if (isParallel) {
         if (settings.YparallelSequential) {
           object SingleNewThreadExectuor extends Executor {
-            private var count: Int = 0
+            private var count: Int = 1
             override def execute(command: Runnable): Unit = synchronized {
               count += 1
-              val newThread = new Thread(command)
-              newThread.setName(s"worker-${phase.name}-$count")
+              val newThread = new IndexedThread(count, Thread.currentThread().getThreadGroup, command, "worker-")
               newThread.start()
               newThread.join()
             }

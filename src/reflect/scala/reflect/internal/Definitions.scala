@@ -828,7 +828,7 @@ trait Definitions extends api.StandardDefinitions {
       }
     }
 
-    private[this] var volatileRecursions = Parallel.IntWorkerThreadLocal(0)
+    private[this] var volatileRecursions = Parallel.ThreadLocalCounter()
     private[this] val pendingVolatiles = Parallel.WorkerThreadLocal(mutable.HashSet[Symbol]())
     object PendingVolatilesLock extends util.Parallel.Lock
 
