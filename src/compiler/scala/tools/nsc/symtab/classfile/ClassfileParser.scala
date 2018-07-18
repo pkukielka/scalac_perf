@@ -124,9 +124,9 @@ abstract class ClassfileParser {
     finally busy = NoSymbol
   }
   @inline private def raiseLoaderLevel[T](body: => T): T = {
-    loaders.parentsLevel += 1
+    loaders.parentsLevel.increment()
     try body
-    finally loaders.parentsLevel -= 1
+    finally loaders.parentsLevel.decrement()
   }
 
   /**
@@ -526,7 +526,7 @@ abstract class ClassfileParser {
       }
 
       loaders.pendingLoadActions ::= (queueLoad _)
-      if (loaders.parentsLevel == 0) {
+      if (loaders.parentsLevel.get == 0) {
         while (loaders.pendingLoadActions.nonEmpty) {
           val item = loaders.pendingLoadActions.head
           loaders.pendingLoadActions = loaders.pendingLoadActions.tail

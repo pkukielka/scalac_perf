@@ -34,28 +34,23 @@ object Parallel {
   }
 
   class ThreadLocalCounter(initial: Int = 0) {
-    final val arr: Array[Int] = Array.fill[Int](1000)(initial)
+    final lazy val arr: Array[Int] = {
+      Array.fill[Int](10)(initial)
+    }
 
-    @inline def index = Thread.currentThread() match {
-      case thread: IndexedThread => thread.index
-      case _ => 0
+    @inline final def index: Int = try {
+      Thread.currentThread().asInstanceOf[IndexedThread].index
+    } catch {
+      case _: Exception => 0
     }
 
     @inline final def get: Int = arr(index)
 
     @inline final def reset(): Unit = arr(index) = 0
 
-    @inline final def incrementAndGet(): Int = {
-      val newValue = arr(index) + 1
-      arr(index) = newValue
-      newValue
-    }
+    @inline final def increment(): Unit = arr(index) += 1
 
-    @inline final def getAndIncrement(): Int = {
-      val oldValue = arr(index)
-      arr(index) = oldValue + 1
-      oldValue
-    }
+    @inline final def decrement(): Unit = arr(index) -= 1
 
     @inline final def set(v: Int): Unit = arr(index) = v
 
@@ -63,7 +58,7 @@ object Parallel {
   }
 
   object ThreadLocalCounter {
-    def apply(initial: Int = 0): ThreadLocalCounter = new ThreadLocalCounter(initial)
+    @inline final def apply(initial: Int = 0): ThreadLocalCounter = new ThreadLocalCounter(initial)
   }
 
   // Wrapper for `synchronized` method. In future could provide additional logging, safety checks, etc.
@@ -96,7 +91,6 @@ object Parallel {
       worker.remove()
     }
   }
-
 
   type WorkerThreadLocal[T] = AbstractThreadLocal[T]
   // `WorkerThreadLocal` detects reads/writes of given value on the main thread and

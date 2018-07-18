@@ -788,8 +788,8 @@ trait Definitions extends api.StandardDefinitions {
             try volatileUpperBound finally pendingVolatiles.get -= sym
           }
         )
-        volatileRecursions.set(volatileRecursions.get + 1)
-        try safeIsVolatile finally volatileRecursions.set(volatileRecursions.get - 1)
+        volatileRecursions.increment()
+        try safeIsVolatile finally volatileRecursions.decrement()
       }
       /** A refined type P1 with ... with Pn { decls } is volatile if
        *  one of the parent types Pi is an abstract type, and

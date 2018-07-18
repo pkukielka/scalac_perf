@@ -340,9 +340,7 @@ abstract class SymbolLoaders {
   }
 
   /** used from classfile parser to avoid cycles */
-  private[this] final val _parentsLevel = Parallel.ThreadLocalCounter()
-  def parentsLevel = _parentsLevel.get
-  def parentsLevel_=(v: Int): Unit = _parentsLevel.set(v)
+  final val parentsLevel = Parallel.ThreadLocalCounter()
 
   private[this] final val _pendingLoadActions = Parallel.WorkerThreadLocal[List[() => Unit]](Nil)
   def pendingLoadActions: List[() => Unit] = _pendingLoadActions.get
